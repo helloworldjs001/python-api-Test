@@ -1,0 +1,35 @@
+name: Python API Test
+
+
+on: 
+    push:
+        branches:
+            - main
+
+
+jobs:
+    test:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - name: Set up Python 3.8
+              uses: actions/setup-python@v2
+              with:
+                  python-version: 3.8
+            
+            - name: Install Deps
+              run: |
+                python -m pip install --upgrade pip
+                pip install -r requirements.txt
+            
+            - name: Start The Flask Server
+              run: |
+                 nohup flask run --host=0.0.0.0 -port=5000 &
+            
+            - name: Wait For the Flask Server
+              run: sleep 5
+
+            - name: Run Tests
+              run: |
+                 pytest
+    
